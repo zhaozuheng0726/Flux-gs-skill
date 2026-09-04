@@ -6,6 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 conda create -n "$ENV_NAME" python=3.11 -y
+if ! command -v nvcc >/dev/null 2>&1; then
+  conda install -n "$ENV_NAME" -c nvidia cuda-toolkit=12.6 cuda-nvcc=12.6 -y
+fi
 conda run -n "$ENV_NAME" python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
 cd "$REPO_ROOT"
 conda run -n "$ENV_NAME" python -m pip install --no-build-isolation -r environment/requirements-flux-gs.txt

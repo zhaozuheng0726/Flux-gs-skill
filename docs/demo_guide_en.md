@@ -8,6 +8,8 @@ This is a short end-to-end guide for running Flux-GS on a custom scene and viewi
 
 Use CUDA 12.6 and Python 3.11 if possible. The Web viewer itself does not need CUDA. CUDA is only needed for training a new model.
 
+For the complete dependency and PDA integration checklist, see [dependencies_zh.md](dependencies_zh.md).
+
 ```bash
 cd /path/to/Flux-gs-skill
 conda create -n flux-gs python=3.11
@@ -31,6 +33,14 @@ tmc3 --help
 ```
 
 If `tmc3` is not in `PATH`, update the path in `training/utils/gpcc_utils.py`.
+
+For the Personal Digital Assistant adapter only, install:
+
+```bash
+pip install -r environment/requirements-pda-adapter.txt
+```
+
+If the PDA repository already installed `backend/requirements.txt`, this is usually already covered.
 
 ## 2. Prepare Your Data
 

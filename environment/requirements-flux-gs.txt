@@ -1,8 +1,20 @@
+# Install PyTorch first with a CUDA wheel that matches the server, for example:
+# python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+#
+# Then install this file with:
+# python -m pip install --no-build-isolation -r environment/requirements-flux-gs.txt
+numpy>=1.26,<3.0
+Pillow>=10,<13
+setuptools>=68
+wheel>=0.43
+packaging>=24
+ninja>=1.11
 websockets
 tqdm
 plyfile
 icecream
 dahuffman
+cupy-cuda12x>=13,<14
 training/submodules/diff-gaussian-rasterization_fluxgs
 training/submodules/simple-knn
 training/submodules/fused-ssim

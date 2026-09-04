@@ -2,6 +2,8 @@
 
 Use the adapter under `integrations/personal-digital-assistant/` when connecting this Flux-GS skill to the Personal Digital Assistant WebAgent project.
 
+For human setup details, use `docs/dependencies_zh.md` and `integrations/personal-digital-assistant/docs/flux-gs-capability.zh.md`.
+
 The PDA capability entrypoint is `create_flux_gs_demo`. The required tool order is:
 
 1. `validate_flux_gs_dataset`
@@ -20,3 +22,9 @@ docs/flux-gs-capability.md
 ```
 
 Wire `FluxGSService`, `register_flux_gs_tools()`, and `create_flux_gs_router()` inside PDA `backend/app/main.py`. If PDA lists Flux-GS jobs through shared asset/job APIs, extend the `kind` literals in `backend/app/models.py` with `flux_gs_demo`.
+
+Copy helper:
+
+```bash
+bash scripts/copy_pda_adapter.sh /path/to/Personal-digital-assistant---A-Web-Agent
+```

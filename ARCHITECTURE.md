@@ -41,6 +41,12 @@ docs/
 
 environment/
   CUDA/Python dependency files and setup script.
+
+scripts/copy_pda_adapter.sh
+  Helper that copies PDA adapter files into a PDA checkout.
+
+server/flux_gs_service.py
+  Independent GPU HTTP Provider service entry that receives jobs, runs training, and publishes Web demos.
 ```
 
 ## Server Requirements
@@ -152,6 +158,8 @@ GET  /v1/skills/flux-gs/jobs/{job_id}
 ```
 
 The PDA adapter adds `X-Tenant-ID`, `X-Owner-ID`, optional `X-API-Key`, and `Idempotency-Key` headers when creating jobs.
+
+For Python dependencies, CUDA build dependencies, and the copy checklist, see [docs/dependencies_zh.md](docs/dependencies_zh.md).
 
 ## WebAgent Behavior
 

@@ -6,6 +6,7 @@ node_modules/
 output/
 outputs/
 datasets/
+runs/
 *.zip
 *.tar
 *.tar.gz

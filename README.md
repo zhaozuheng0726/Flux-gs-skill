@@ -4,6 +4,8 @@ This repository contains Zhaozuheng's Flux-GS training code, WebGL demo files, a
 
 中文说明见：[docs/demo_guide_zh.md](docs/demo_guide_zh.md)
 
+依赖与接入检查见：[docs/dependencies_zh.md](docs/dependencies_zh.md)
+
 ## Project Goal
 
 This project is designed to run as a WebAgent skill:
@@ -37,6 +39,9 @@ training/
   requirements.txt           # Training dependencies
   submodules/                # CUDA extension sources
 
+server/
+  flux_gs_service.py         # Minimal HTTP Provider service for PDA/WebAgent
+
 skill/
   flux-gs-demo/              # Agent-facing skill instructions and helper scripts
 
@@ -53,10 +58,15 @@ docs/
 
 environment/
   requirements-flux-gs.txt   # Python/CUDA training dependencies
+  requirements-pda-adapter.txt
+  requirements-flux-gs-service.txt
   setup_flux_gs_training.sh  # Example training environment setup
 
 scripts/
   start_web.sh               # Start the static Web demo locally
+  start_flux_gs_service.sh   # Start the HTTP training/publishing service
+  copy_pda_adapter.sh        # Copy PDA adapter files into a PDA checkout
+  check_flux_gs_skill_repo.sh
 ```
 
 ## Run The Web Demo
@@ -86,8 +96,15 @@ CUDA_VISIBLE_DEVICES=0 OAR_JOB_ID=my_scene python train.py -s ./datasets/my_scen
 
 Start here:
 
+- [依赖与接入检查](docs/dependencies_zh.md)
 - [中文流程](docs/demo_guide_zh.md)
 - [English guide](docs/demo_guide_en.md)
+
+Repository self-check:
+
+```bash
+bash scripts/check_flux_gs_skill_repo.sh
+```
 
 ## WebAgent Skill Entry Points
 
@@ -115,4 +132,18 @@ The PDA-facing entrypoint is `create_flux_gs_demo`. It is registered through `re
 
 Copy the adapter files from `integrations/personal-digital-assistant/` into the PDA project, then wire `FluxGSService`, `register_flux_gs_tools()`, and `create_flux_gs_router()` in PDA `backend/app/main.py`.
 
+You can copy the adapter files with:
+
+```bash
+bash scripts/copy_pda_adapter.sh /path/to/Personal-digital-assistant---A-Web-Agent
+```
+
 The Flux-GS CUDA training process remains an independent GPU HTTP service. PDA should only create jobs, check status, and return `demo_url`.
+
+Start the included minimal provider service from the repository root:
+
+```bash
+conda activate flux-gs
+python -m pip install -r environment/requirements-flux-gs-service.txt
+bash scripts/start_flux_gs_service.sh
+```

@@ -8,6 +8,8 @@
 
 推荐使用 CUDA 12.6 和 Python 3.11。Web viewer 本身不需要 CUDA，只有训练新模型时需要。
 
+完整依赖清单见：[Flux-GS Skill 依赖与接入检查](dependencies_zh.md)。
+
 ```bash
 cd /path/to/Flux-gs-skill
 conda create -n flux-gs python=3.11
@@ -31,6 +33,14 @@ tmc3 --help
 ```
 
 如果系统找不到 `tmc3`，需要在 `training/utils/gpcc_utils.py` 里修改对应路径。
+
+如果要接入 `Personal-digital-assistant---A-Web-Agent`，PDA adapter 还需要：
+
+```bash
+pip install -r environment/requirements-pda-adapter.txt
+```
+
+如果 PDA 项目已经安装了自己的 `backend/requirements.txt`，通常不需要重复安装这一步。
 
 ## 2. 准备自己的数据
 

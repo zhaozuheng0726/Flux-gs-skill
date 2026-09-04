@@ -37,6 +37,12 @@ docs/
 
 environment/
   CUDA/Python 依赖和环境安装脚本。
+
+scripts/copy_pda_adapter.sh
+  把 PDA adapter 文件复制到 PDA 项目的辅助脚本。
+
+server/flux_gs_service.py
+  独立 GPU HTTP Provider 服务入口，负责接收任务、后台训练、发布 Web demo。
 ```
 
 ## 服务器要求
@@ -157,6 +163,8 @@ GET  /v1/skills/flux-gs/jobs/{job_id}
 ```
 
 PDA 适配层创建任务时会带上 `X-Tenant-ID`、`X-Owner-ID`、可选 `X-API-Key` 和 `Idempotency-Key`。
+
+完整 Python 依赖、CUDA 编译依赖和接入检查见：[docs/dependencies_zh.md](docs/dependencies_zh.md)。
 
 ## WebAgent 应该怎么表现
 

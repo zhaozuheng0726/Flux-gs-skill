@@ -2,6 +2,8 @@
 
 This guide maps this repository to the Personal Digital Assistant Capability integration contract.
 
+中文说明见：[flux-gs-capability.zh.md](flux-gs-capability.zh.md). Dependency details are also listed in [../../../docs/dependencies_zh.md](../../../docs/dependencies_zh.md).
+
 ## Runtime Shape
 
 ```text
@@ -22,7 +24,14 @@ PDA should not run CUDA training inside the Agent loop or channel callback. The 
 
 ## Files To Copy Into PDA
 
-Copy these files into `Personal-digital-assistant---A-Web-Agent`:
+Copy these files into `Personal-digital-assistant---A-Web-Agent`, or run:
+
+```bash
+cd /path/to/Flux-gs-skill
+bash scripts/copy_pda_adapter.sh /path/to/Personal-digital-assistant---A-Web-Agent
+```
+
+Manual copy list:
 
 ```text
 integrations/personal-digital-assistant/backend/app/flux_gs.py
@@ -68,6 +77,28 @@ In `backend/app/orchestration.py`, add an async handoff message for `create_flux
 
 ## Environment
 
+PDA's own `backend/requirements.txt` already includes the adapter dependencies. For standalone adapter testing:
+
+```bash
+python -m pip install -r environment/requirements-pda-adapter.txt
+```
+
+For the independent GPU service, install the Flux-GS training dependencies and then optionally:
+
+```bash
+python -m pip install -r environment/requirements-flux-gs-service.txt
+```
+
+This repository includes a minimal service implementation:
+
+```bash
+conda activate flux-gs
+cd /path/to/Flux-gs-skill
+FLUX_GS_BASE_URL=http://127.0.0.1:8000 bash scripts/start_flux_gs_service.sh
+```
+
+The included service is intended for single-machine deployment and integration testing. For production-grade resume, scheduling, or audit behavior, replace the background executor with Celery, RQ, Slurm, systemd-run, or an existing queue system.
+
 ```bash
 FLUX_GS_PROVIDER=http
 FLUX_GS_SERVICE_URL=http://127.0.0.1:18100
@@ -80,7 +111,7 @@ Use `FLUX_GS_PROVIDER=preview` only for PDA backend tests; it validates dataset 
 
 ## Provider Contract
 
-The independent GPU service should expose:
+The independent GPU service should expose these endpoints; `server/flux_gs_service.py` implements them:
 
 ```text
 GET  /health/ready
