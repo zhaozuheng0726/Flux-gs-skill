@@ -9,11 +9,19 @@
 推荐使用 CUDA 12.6 和 Python 3.11。Web viewer 本身不需要 CUDA，只有训练新模型时需要。
 
 ```bash
+cd /path/to/Flux-gs-skill
 conda create -n flux-gs python=3.11
 conda activate flux-gs
 
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
 pip install --no-build-isolation -r environment/requirements-flux-gs.txt
+```
+
+也可以直接运行仓库里的安装脚本：
+
+```bash
+cd /path/to/Flux-gs-skill
+bash environment/setup_flux_gs_training.sh
 ```
 
 Flux-GS 压缩模型时还需要 GPCC/TMC13。请先编译或安装 `tmc3`，并确认它在 `PATH` 里。
@@ -22,7 +30,7 @@ Flux-GS 压缩模型时还需要 GPCC/TMC13。请先编译或安装 `tmc3`，并
 tmc3 --help
 ```
 
-如果系统找不到 `tmc3`，需要在 Flux-GS 训练代码的 `utils/gpcc_utils.py` 里修改对应路径。
+如果系统找不到 `tmc3`，需要在 `training/utils/gpcc_utils.py` 里修改对应路径。
 
 ## 2. 准备自己的数据
 
@@ -47,11 +55,11 @@ datasets/my_scene/
 
 ## 3. 训练 Flux-GS
 
-在 Flux-GS 训练仓库根目录运行：
+在本仓库的 `training/` 目录运行：
 
 ```bash
 conda activate flux-gs
-cd /path/to/Flux-GS
+cd /path/to/Flux-gs-skill/training
 
 CUDA_VISIBLE_DEVICES=0 OAR_JOB_ID=my_scene python train.py \
   -s ./datasets/my_scene \
@@ -125,7 +133,7 @@ CUDA_VISIBLE_DEVICES=0 python metrics.py -m output/my_scene
 ```bash
 cd /path/to/Flux-gs-skill/web
 cp -r render_truck render_my_scene
-cp /path/to/Flux-GS/output/my_scene/comp.json render_my_scene/my_scene.json
+cp /path/to/Flux-gs-skill/training/output/my_scene/comp.json render_my_scene/my_scene.json
 ```
 
 修改 `render_my_scene/main.js`：
@@ -189,4 +197,3 @@ CUDA_VISIBLE_DEVICES=0 OAR_JOB_ID=my_scene python train.py \
 ```bash
 CUDA_VISIBLE_DEVICES=0 python render.py -m output/my_scene --skip_train --decode --mult 0.7
 ```
-

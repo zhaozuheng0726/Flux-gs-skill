@@ -1,6 +1,6 @@
 # Flux-GS Skill Demo
 
-This repository contains Zhaozuheng's Flux-GS WebGL demo files and a short guide for training a custom Flux-GS scene and publishing it as a browser demo.
+This repository contains Zhaozuheng's Flux-GS training code, WebGL demo files, and a short guide for training a custom scene and publishing it as a browser demo.
 
 中文说明见：[docs/demo_guide_zh.md](docs/demo_guide_zh.md)
 
@@ -13,6 +13,12 @@ web/
   render_shared/             # Shared WebGL viewer code
   tools/tmc3.js
   tools/tmc3.wasm            # Browser-side GPCC decoder
+
+training/
+  train.py                   # Flux-GS training entry
+  render.py                  # Offline rendering/evaluation entry
+  requirements.txt           # Training dependencies
+  submodules/                # CUDA extension sources
 
 docs/
   demo_guide_en.md           # English end-to-end guide
@@ -43,10 +49,15 @@ The Web viewer is static HTML/JavaScript. It does not need Node.js, CUDA, or Pyt
 
 ## Train Your Own Scene
 
-Use the full Flux-GS training code, prepare a COLMAP-style dataset, train the scene, then copy the exported `comp.json` into a new folder under `web/`.
+Use the code in `training/`, prepare a COLMAP-style dataset, train the scene, then copy the exported `comp.json` into a new folder under `web/`.
+
+```bash
+bash environment/setup_flux_gs_training.sh
+cd training
+CUDA_VISIBLE_DEVICES=0 OAR_JOB_ID=my_scene python train.py -s ./datasets/my_scene -i images --eval
+```
 
 Start here:
 
 - [中文流程](docs/demo_guide_zh.md)
 - [English guide](docs/demo_guide_en.md)
-

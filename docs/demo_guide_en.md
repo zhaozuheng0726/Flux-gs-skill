@@ -9,11 +9,19 @@ This is a short end-to-end guide for running Flux-GS on a custom scene and viewi
 Use CUDA 12.6 and Python 3.11 if possible. The Web viewer itself does not need CUDA. CUDA is only needed for training a new model.
 
 ```bash
+cd /path/to/Flux-gs-skill
 conda create -n flux-gs python=3.11
 conda activate flux-gs
 
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
 pip install --no-build-isolation -r environment/requirements-flux-gs.txt
+```
+
+You can also run the setup script from the repository root:
+
+```bash
+cd /path/to/Flux-gs-skill
+bash environment/setup_flux_gs_training.sh
 ```
 
 Flux-GS also needs GPCC/TMC13 for compression. Build or install `tmc3`, then make sure it can be found in `PATH`.
@@ -22,7 +30,7 @@ Flux-GS also needs GPCC/TMC13 for compression. Build or install `tmc3`, then mak
 tmc3 --help
 ```
 
-If `tmc3` is not in `PATH`, update the path in the Flux-GS training code at `utils/gpcc_utils.py`.
+If `tmc3` is not in `PATH`, update the path in `training/utils/gpcc_utils.py`.
 
 ## 2. Prepare Your Data
 
@@ -47,11 +55,11 @@ If you only have photos, first run COLMAP or another SfM pipeline to estimate ca
 
 ## 3. Train Flux-GS
 
-Run training from the Flux-GS training repository root.
+Run training from this repository's `training/` directory.
 
 ```bash
 conda activate flux-gs
-cd /path/to/Flux-GS
+cd /path/to/Flux-gs-skill/training
 
 CUDA_VISIBLE_DEVICES=0 OAR_JOB_ID=my_scene python train.py \
   -s ./datasets/my_scene \
@@ -125,7 +133,7 @@ Create a new demo folder by copying an existing one:
 ```bash
 cd /path/to/Flux-gs-skill/web
 cp -r render_truck render_my_scene
-cp /path/to/Flux-GS/output/my_scene/comp.json render_my_scene/my_scene.json
+cp /path/to/Flux-gs-skill/training/output/my_scene/comp.json render_my_scene/my_scene.json
 ```
 
 Edit `render_my_scene/main.js`:
@@ -189,4 +197,3 @@ Use the same `--mult` value again when rendering if you trained with a custom va
 ```bash
 CUDA_VISIBLE_DEVICES=0 python render.py -m output/my_scene --skip_train --decode --mult 0.7
 ```
-
