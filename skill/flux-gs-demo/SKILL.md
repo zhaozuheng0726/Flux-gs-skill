@@ -90,3 +90,4 @@ Return the script's `url` value to the user.
 
 - Read `references/webagent_pipeline.md` when implementing the WebAgent integration.
 - Read `references/server_contract.md` when defining API endpoints, job state, or queue behavior.
+- Read `references/personal_digital_assistant.md` when integrating with `Personal-digital-assistant---A-Web-Agent`.

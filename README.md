@@ -1,6 +1,6 @@
 # Flux-GS Skill Demo
 
-This repository contains Zhaozuheng's Flux-GS training code, WebGL demo files, and a WebAgent skill design for turning a user-provided dataset into a browser-viewable 3D Gaussian Splatting render.
+This repository contains Zhaozuheng's Flux-GS training code, WebGL demo files, and a Personal Digital Assistant/WebAgent Capability adapter for turning a user-provided dataset into a browser-viewable 3D Gaussian Splatting render.
 
 中文说明见：[docs/demo_guide_zh.md](docs/demo_guide_zh.md)
 
@@ -17,6 +17,9 @@ This project is designed to run as a WebAgent skill:
 7. The user receives a URL and opens it in the browser to inspect the rendering result.
 
 For the integration design, see [ARCHITECTURE.md](ARCHITECTURE.md). 中文架构说明见：[ARCHITECTURE.zh.md](ARCHITECTURE.zh.md)。
+
+For the Personal Digital Assistant integration package, start here:
+[integrations/personal-digital-assistant/docs/flux-gs-capability.md](integrations/personal-digital-assistant/docs/flux-gs-capability.md)
 
 ## What Is Included
 
@@ -36,6 +39,13 @@ training/
 
 skill/
   flux-gs-demo/              # Agent-facing skill instructions and helper scripts
+
+integrations/
+  personal-digital-assistant/
+    backend/app/flux_gs.py   # PDA Capability adapter: Service, Provider, ToolSpec, Router
+    backend/tests/test_flux_gs.py
+    backend/config/flux-gs.json
+    docs/flux-gs-capability.md
 
 docs/
   demo_guide_en.md           # English end-to-end guide
@@ -98,3 +108,11 @@ python skill/flux-gs-demo/scripts/publish_web_demo.py \
 ```
 
 The WebAgent should call validation first, start training only after validation passes, then return the published `url` field to the user.
+
+## Personal Digital Assistant Capability
+
+The PDA-facing entrypoint is `create_flux_gs_demo`. It is registered through `register_flux_gs_tools()` and backed by `FluxGSService` plus `FluxGSHttpProvider`.
+
+Copy the adapter files from `integrations/personal-digital-assistant/` into the PDA project, then wire `FluxGSService`, `register_flux_gs_tools()`, and `create_flux_gs_router()` in PDA `backend/app/main.py`.
+
+The Flux-GS CUDA training process remains an independent GPU HTTP service. PDA should only create jobs, check status, and return `demo_url`.

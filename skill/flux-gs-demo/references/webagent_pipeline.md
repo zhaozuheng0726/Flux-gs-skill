@@ -1,6 +1,6 @@
 # WebAgent Pipeline
 
-Use this reference when wiring Flux-GS into a WebAgent framework.
+Use this reference when wiring Flux-GS into a WebAgent framework. For `Personal-digital-assistant---A-Web-Agent`, use the copyable adapter in `integrations/personal-digital-assistant/`.
 
 ## Stages
 
@@ -10,14 +10,14 @@ Use this reference when wiring Flux-GS into a WebAgent framework.
    - Store the dataset under a server-controlled workspace.
 
 2. Validation
-   - Call `validate_dataset.py <dataset_path> --json`.
+   - Call `validate_flux_gs_dataset` in PDA, or `validate_dataset.py <dataset_path> --json` in the standalone server.
    - If invalid, return `errors`, `warnings`, and `next_actions` to the AI agent.
    - The AI agent should explain exactly which files are missing or malformed and ask the user to upload/fix only those items.
 
 3. Training
    - Start training only after validation passes.
    - Run from `training/`.
-   - Use a job queue or background worker; do not block the HTTP request.
+   - Use a durable job queue or background worker; do not block the HTTP request, Agent loop, or channel callback.
    - Capture logs, status, start time, end time, GPU id, and model output path.
 
 4. Output Check
@@ -41,6 +41,7 @@ The AI should be strict about data validity and gentle about repair guidance:
 ## Server Notes
 
 - Never run training directly inside the chat request handler.
+- In PDA, register `create_flux_gs_demo` through `ToolSpec` and call an independent HTTP Provider.
 - Use an allowlisted workspace path for uploads.
 - Sanitize `scene_name` to lowercase letters, numbers, `_`, and `-`.
 - Keep datasets and training outputs out of Git.

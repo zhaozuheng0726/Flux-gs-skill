@@ -1,6 +1,6 @@
 # Flux-GS WebAgent Skill Architecture
 
-This repository is intended to be deployed as a WebAgent skill that turns a user dataset into a browser-viewable Flux-GS rendering.
+This repository is intended to be deployed as a Personal Digital Assistant/WebAgent Capability that turns a user dataset into a browser-viewable Flux-GS rendering.
 
 ## Goal
 
@@ -9,14 +9,16 @@ The user provides a dataset. The AI/WebAgent validates whether the dataset is tr
 ## Runtime Flow
 
 ```text
-User dataset
-  -> WebAgent intake
-  -> Dataset validation
+Web / Feishu dataset upload
+  -> PDA Tool Registry
+  -> validate_flux_gs_dataset
   -> AI repair guidance if invalid
-  -> GPU training job if valid
-  -> comp.json output check
+  -> create_flux_gs_demo
+  -> FluxGSService
+  -> FluxGSHttpProvider
+  -> independent GPU Flux-GS job
   -> WebGL demo publishing
-  -> User receives demo URL
+  -> User receives demo_url
 ```
 
 ## Repository Roles
@@ -30,6 +32,9 @@ web/
 
 skill/flux-gs-demo/
   Agent-facing skill instructions and deterministic helper scripts.
+
+integrations/personal-digital-assistant/
+  PDA Capability adapter files that can be copied into the WebAgent project.
 
 docs/
   Human-facing end-to-end guides.
@@ -48,6 +53,26 @@ environment/
 - GPCC/TMC13 `tmc3` binary available in `PATH`
 - A background job runner for training, such as Celery, RQ, systemd-run, Slurm, or a custom queue
 - Static file hosting for `web/`
+
+## Personal Digital Assistant Integration
+
+This repository now includes a PDA adapter that follows `docs/guides/capability-integration.md` from `Personal-digital-assistant---A-Web-Agent`.
+
+```text
+integrations/personal-digital-assistant/backend/app/flux_gs.py
+  Service, Provider Protocol, HTTP Provider, ToolSpec registration, FastAPI router.
+
+integrations/personal-digital-assistant/backend/tests/test_flux_gs.py
+  Tool schema and HTTP provider contract tests.
+
+integrations/personal-digital-assistant/backend/config/flux-gs.json
+  Capability metadata, provider env vars, and hardware requirements.
+
+integrations/personal-digital-assistant/docs/flux-gs-capability.md
+  Copy/wiring guide for PDA.
+```
+
+PDA should not execute Flux-GS CUDA training inside the Agent loop or channel callback. `create_flux_gs_demo` creates a remote durable job through the configured Flux-GS HTTP service and returns a `job_id`. `get_flux_gs_job_status` returns progress and the final `demo_url`.
 
 ## Dataset Validation
 
@@ -113,6 +138,20 @@ python skill/flux-gs-demo/scripts/publish_web_demo.py \
 ```
 
 Return the `url` field to the user.
+
+## HTTP Provider Contract
+
+The independent GPU service should expose:
+
+```text
+GET  /health/ready
+GET  /health/provider
+POST /v1/skills/flux-gs/datasets/validate
+POST /v1/skills/flux-gs/jobs
+GET  /v1/skills/flux-gs/jobs/{job_id}
+```
+
+The PDA adapter adds `X-Tenant-ID`, `X-Owner-ID`, optional `X-API-Key`, and `Idempotency-Key` headers when creating jobs.
 
 ## WebAgent Behavior
 
