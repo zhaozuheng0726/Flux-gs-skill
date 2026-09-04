@@ -1,8 +1,22 @@
 # Flux-GS Skill Demo
 
-This repository contains Zhaozuheng's Flux-GS training code, WebGL demo files, and a short guide for training a custom scene and publishing it as a browser demo.
+This repository contains Zhaozuheng's Flux-GS training code, WebGL demo files, and a WebAgent skill design for turning a user-provided dataset into a browser-viewable 3D Gaussian Splatting render.
 
 中文说明见：[docs/demo_guide_zh.md](docs/demo_guide_zh.md)
+
+## Project Goal
+
+This project is designed to run as a WebAgent skill:
+
+1. A user provides a dataset.
+2. The AI validates whether the dataset is legal for Flux-GS training.
+3. If the dataset is invalid, the AI explains what to fix and asks the user to update the data.
+4. After validation passes, the server starts Flux-GS training on GPU.
+5. Training exports `comp.json`.
+6. The server publishes `comp.json` into the WebGL viewer.
+7. The user receives a URL and opens it in the browser to inspect the rendering result.
+
+For the integration design, see [ARCHITECTURE.md](ARCHITECTURE.md). 中文架构说明见：[ARCHITECTURE.zh.md](ARCHITECTURE.zh.md)。
 
 ## What Is Included
 
@@ -19,6 +33,9 @@ training/
   render.py                  # Offline rendering/evaluation entry
   requirements.txt           # Training dependencies
   submodules/                # CUDA extension sources
+
+skill/
+  flux-gs-demo/              # Agent-facing skill instructions and helper scripts
 
 docs/
   demo_guide_en.md           # English end-to-end guide
@@ -61,3 +78,23 @@ Start here:
 
 - [中文流程](docs/demo_guide_zh.md)
 - [English guide](docs/demo_guide_en.md)
+
+## WebAgent Skill Entry Points
+
+Validate a user dataset:
+
+```bash
+python skill/flux-gs-demo/scripts/validate_dataset.py /path/to/dataset --json
+```
+
+Publish a trained model to the Web viewer:
+
+```bash
+python skill/flux-gs-demo/scripts/publish_web_demo.py \
+  --scene-name my_scene \
+  --comp-json training/output/my_scene/comp.json \
+  --web-root web \
+  --base-url https://your-server.example.com/flux-gs
+```
+
+The WebAgent should call validation first, start training only after validation passes, then return the published `url` field to the user.

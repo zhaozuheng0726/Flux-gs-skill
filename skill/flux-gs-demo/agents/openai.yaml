@@ -1,0 +1,6 @@
+interface:
+  display_name: "Flux-GS Demo"
+  short_description: "Validate, train, and publish Flux-GS Web demos."
+  default_prompt: "Use $flux-gs-demo to validate my dataset, train Flux-GS, and return a WebGL demo URL."
+policy:
+  allow_implicit_invocation: true
